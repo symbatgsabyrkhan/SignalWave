@@ -12,7 +12,6 @@ data → indicators → market structure → Fibonacci → Elliott → scenarios
 
 🤖 **Telegram Bot:** https://t.me/signalwave_BOT
 
-SignalWave — платформа для технического анализа криптовалют.
 
 ## 1. Project Structure
 
