@@ -2623,7 +2623,9 @@ function bindNavigation() {
                         break;
 
                     case "settings":
-                        openAssistant();
+                        showNotice(
+                            "Settings: language and AI provider are configured from the top bar and server environment."
+                        );
                         break;
                 }
             }

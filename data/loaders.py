@@ -66,9 +66,74 @@ def parse_binance_klines(rows:list, symbol:str, timeframe:str)->ValidationResult
     return ValidationResult(d,vr.warnings)
 
 
-def fetch_binance(symbol:str,timeframe:str="1d",limit:int=1000,session=None,base_url:str="https://api.binance.com") -> ValidationResult:
-    if not (1 <= limit <= 1000): raise ValueError("limit must be 1..1000")
-    s=session or requests
-    resp=s.get(f"{base_url}/api/v3/klines",params={"symbol":symbol.upper(),"interval":timeframe,"limit":limit},timeout=15)
-    resp.raise_for_status()
-    return parse_binance_klines(resp.json(),symbol.upper(),timeframe)
+def fetch_binance(
+    symbol: str,
+    timeframe: str = "1d",
+    limit: int = 1000,
+    session=None,
+    base_url: str | None = None,
+) -> ValidationResult:
+
+    if not (1 <= limit <= 1000):
+        raise ValueError(
+            "limit must be 1..1000"
+        )
+
+    s = session or requests
+
+    endpoints = []
+
+    if base_url:
+        endpoints.append(base_url)
+
+    endpoints.extend(
+        [
+            "https://data-api.binance.vision",
+            "https://api.binance.com",
+            "https://api-gcp.binance.com",
+            "https://api1.binance.com",
+            "https://api2.binance.com",
+            "https://api3.binance.com",
+            "https://api4.binance.com",
+        ]
+    )
+
+    # Preserve order while removing duplicates.
+    endpoints = list(
+        dict.fromkeys(endpoints)
+    )
+
+    errors = []
+
+    for endpoint in endpoints:
+        try:
+            resp = s.get(
+                f"{endpoint}/api/v3/klines",
+                params={
+                    "symbol":
+                        symbol.upper(),
+                    "interval":
+                        timeframe,
+                    "limit":
+                        limit,
+                },
+                timeout=15,
+            )
+
+            resp.raise_for_status()
+
+            return parse_binance_klines(
+                resp.json(),
+                symbol.upper(),
+                timeframe,
+            )
+
+        except Exception as exc:
+            errors.append(
+                f"{endpoint}: {exc}"
+            )
+
+    raise RuntimeError(
+        "All Binance public endpoints failed. "
+        + " | ".join(errors)
+    )
