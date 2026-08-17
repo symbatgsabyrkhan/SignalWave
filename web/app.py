@@ -11,7 +11,7 @@ from typing import Any, Literal
 import httpx
 import pandas as pd
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -940,3 +940,150 @@ def backtest(
                 f"{exc}"
             ),
         ) from exc
+    # ============================================================
+    # TELEGRAM WEBHOOK
+    # ============================================================
+
+    from aiogram.types import Update
+
+    from bot.app import (
+        close_runtime,
+        create_runtime,
+        start_background_tasks,
+    )
+
+    TELEGRAM_WEBHOOK_PATH = "/telegram/webhook"
+
+    @app.on_event("startup")
+    async def telegram_startup():
+
+        token = os.getenv(
+            "TELEGRAM_BOT_TOKEN"
+        )
+
+        if not token:
+            print(
+                "Telegram webhook disabled: "
+                "TELEGRAM_BOT_TOKEN is not configured."
+            )
+            return
+
+        bot, _, _ = create_runtime()
+
+        external_url = os.getenv(
+            "TELEGRAM_WEBHOOK_URL"
+        )
+
+        if not external_url:
+
+            render_url = os.getenv(
+                "RENDER_EXTERNAL_URL"
+            )
+
+            if render_url:
+                external_url = (
+                        render_url.rstrip("/")
+                        + TELEGRAM_WEBHOOK_PATH
+                )
+
+        if not external_url:
+            print(
+                "Telegram webhook disabled: "
+                "TELEGRAM_WEBHOOK_URL or "
+                "RENDER_EXTERNAL_URL is required."
+            )
+            return
+
+        secret = os.getenv(
+            "TELEGRAM_WEBHOOK_SECRET"
+        )
+
+        kwargs = {
+            "url": external_url,
+            "drop_pending_updates": False,
+            "allowed_updates": [
+                "message",
+                "callback_query",
+            ],
+        }
+
+        if secret:
+            kwargs[
+                "secret_token"
+            ] = secret
+
+        await bot.set_webhook(
+            **kwargs
+        )
+
+        await start_background_tasks()
+
+        print(
+            "Telegram webhook configured:",
+            external_url,
+        )
+
+    @app.on_event("shutdown")
+    async def telegram_shutdown():
+
+        token = os.getenv(
+            "TELEGRAM_BOT_TOKEN"
+        )
+
+        if token:
+            await close_runtime()
+
+    @app.post(
+        TELEGRAM_WEBHOOK_PATH
+    )
+    async def telegram_webhook(
+            request: Request,
+    ):
+
+        bot, dispatcher, _ = (
+            create_runtime()
+        )
+
+        expected_secret = os.getenv(
+            "TELEGRAM_WEBHOOK_SECRET"
+        )
+
+        if expected_secret:
+
+            received_secret = (
+                request.headers.get(
+                    "X-Telegram-Bot-Api-Secret-Token"
+                )
+            )
+
+            if (
+                    received_secret
+                    != expected_secret
+            ):
+                raise HTTPException(
+                    status_code=403,
+                    detail=(
+                        "Invalid Telegram "
+                        "webhook secret"
+                    ),
+                )
+
+        payload = await request.json()
+
+        update = (
+            Update.model_validate(
+                payload,
+                context={
+                    "bot": bot
+                },
+            )
+        )
+
+        await dispatcher.feed_update(
+            bot,
+            update,
+        )
+
+        return {
+            "ok": True
+        }

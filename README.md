@@ -1090,3 +1090,4 @@ Production / external items not claimed as completed:
 SignalWave is an educational and research technical-analysis system.
 
 It does not guarantee market movements or investment returns and does not constitute financial advice.
+- No automatic orders, leverage, or withdrawal functionality.
