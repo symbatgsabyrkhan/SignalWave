@@ -401,11 +401,11 @@ def create_runtime():
 
         except Exception as exc:
             await message.answer(
-                (
+                
                     "❌ Анализ не выполнен: "
                     f"{type(exc).__name__}: "
                     f"{exc}"
-                )
+                
             )
 
     @dp.message(CommandStart())
@@ -539,10 +539,10 @@ def create_runtime():
 
         except Exception as exc:
             await message.answer(
-                (
+                
                     "❌ CSV не прошёл "
                     f"проверку: {exc}"
-                )
+                
             )
 
         finally:
@@ -605,13 +605,13 @@ def create_runtime():
         await callback.answer()
 
         await callback.message.answer(
-            (
+            
                 "⏳ Binance: "
                 f"{symbol_name} / "
                 f"{timeframe}, "
                 "загружаю "
                 "1,000 свечей…"
-            )
+            
         )
 
         try:
@@ -651,10 +651,10 @@ def create_runtime():
 
         except Exception as exc:
             await callback.message.answer(
-                (
+                
                     "❌ Binance error: "
                     f"{exc}"
-                )
+                
             )
 
     @dp.callback_query(
@@ -856,7 +856,7 @@ def create_runtime():
         )
 
         await callback.message.answer(
-            (
+            
                 "📅 LONG-TERM / INVEST\n\n"
                 f"{meta['symbol']} "
                 f"{meta['timeframe']}\n"
@@ -870,7 +870,7 @@ def create_runtime():
                 "долгосрочной структуры."
                 "\n\nNot financial advice — "
                 "educational tool."
-            )
+            
         )
 
     @dp.callback_query(
@@ -954,7 +954,7 @@ def create_runtime():
         )
 
         await callback.message.answer(
-            (
+            
                 "🧪 BACKTEST — 70/30 OOS\n"
                 f"{meta['symbol']} "
                 f"{meta['timeframe']}\n"
@@ -979,7 +979,7 @@ def create_runtime():
                 "0.05% slippage/side "
                 "assumption. "
                 "No same-bar execution."
-            )
+            
         )
 
     @dp.callback_query(
@@ -991,23 +991,23 @@ def create_runtime():
         await callback.answer()
 
         await callback.message.answer(
-            (
+            
                 "🔔 Отправьте: "
                 "ALERT BTCUSDT "
                 "100000 above\n"
                 "или ALERT BTCUSDT "
                 "90000 below"
-            )
+            
         )
 
     @dp.message(
         F.text.regexp(
-            (
+            
                 r"(?i)^ALERT\s+"
                 r"[A-Z0-9]{5,15}\s+"
                 r"\d+(\.\d+)?\s+"
                 r"(above|below)$"
-            )
+            
         )
     )
     async def save_alert(
@@ -1025,13 +1025,13 @@ def create_runtime():
         )
 
         await message.answer(
-            (
+            
                 f"✅ Alert #{alert_id}: "
                 f"{symbol_name.upper()} "
                 f"{direction.lower()} "
                 f"{float(level):g}. "
                 "Фоновая проверка включена."
-            )
+            
         )
 
     _bot = bot
@@ -1055,11 +1055,11 @@ async def alert_worker():
     while True:
         try:
             rows = repo.conn.execute(
-                (
+                
                     "SELECT DISTINCT symbol "
                     "FROM alerts "
                     "WHERE active=1"
-                )
+                
             ).fetchall()
 
             from data.loaders import (

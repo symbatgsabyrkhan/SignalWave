@@ -1,8 +1,9 @@
 from pathlib import Path
+
+from charts.plotter import render_chart
 from data.loaders import load_csv
 from pipeline import analyze
-from charts.plotter import render_chart
-from reports.render import render_short, render_detailed
+from reports.render import render_detailed, render_short
 
 root=Path(__file__).resolve().parent
 vr=load_csv(root/'sample_data'/'demo.csv',symbol='DEMO',timeframe='1d')

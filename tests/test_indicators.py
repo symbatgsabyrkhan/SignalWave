@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from analysis.indicators import sma,ema,rsi,macd,bollinger,true_range,atr,volume_features,add_indicators
+
+from analysis.indicators import add_indicators, atr, bollinger, ema, macd, rsi, sma, true_range, volume_features
+
 
 @pytest.mark.parametrize('period',[2,3,5,10,20,50,100,200])
 def test_sma_matches_rolling(candles,period):

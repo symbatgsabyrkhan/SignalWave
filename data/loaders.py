@@ -1,12 +1,14 @@
 """CSV/Koyfin and Binance public-data loaders."""
 from __future__ import annotations
+
 import hashlib
-import io
 import re
 from pathlib import Path
+
 import pandas as pd
 import requests
-from .validation import validate_candles, ValidationResult
+
+from .validation import ValidationResult, validate_candles
 
 
 def file_sha256(path:str|Path)->str:
@@ -36,10 +38,10 @@ def normalize_csv_frame(raw:pd.DataFrame, symbol:str|None=None, timeframe:str="u
     # Koyfin columns, e.g. BTCUSD Open
     for standard in ("open","high","low","close","volume"):
         if standard not in mapping:
-            matches=[c for c in raw.columns if re.search(rf"\b{standard}\b",str(c),re.I)]
+            matches=[c for c in raw.columns if re.search(rf"\b{standard}\b",str(c),re.IGNORECASE)]
             if matches: mapping[standard]=matches[0]
     if "time" not in mapping:
-        matches=[c for c in raw.columns if re.search(r"date|time",str(c),re.I)]
+        matches=[c for c in raw.columns if re.search(r"date|time",str(c),re.IGNORECASE)]
         if matches: mapping["time"]=matches[0]
     missing=[x for x in ("time","open","high","low","close") if x not in mapping]
     if missing: raise ValueError(f"could not detect columns: {', '.join(missing)}")

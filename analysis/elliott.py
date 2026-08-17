@@ -3,8 +3,11 @@
 It enforces the three cardinal impulse rules and returns a probabilistic score.
 """
 from __future__ import annotations
+
 from dataclasses import dataclass
+
 from .structure import Pivot
+
 
 @dataclass(frozen=True)
 class ElliottCount:

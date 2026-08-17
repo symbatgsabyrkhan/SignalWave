@@ -1,6 +1,8 @@
 from pathlib import Path
+
 import pytest
-from analysis.scenarios import DISCLAIMER,confidence_label
+
+from analysis.scenarios import DISCLAIMER, confidence_label
 
 ROOT=Path(__file__).resolve().parents[1]
 

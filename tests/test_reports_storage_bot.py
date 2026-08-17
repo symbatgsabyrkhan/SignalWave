@@ -1,8 +1,10 @@
 import pytest
-from analysis.scenarios import make_card,DISCLAIMER
-from reports.render import render_short,render_detailed
+
+from analysis.scenarios import DISCLAIMER, make_card
+from bot.handlers import MENU, csv_prompt, start_text, validate_menu_choice
+from reports.render import render_detailed, render_short
 from storage.repository import Repository
-from bot.handlers import MENU,start_text,csv_prompt,validate_menu_choice
+
 
 def card(): return make_card('up',(99,101),90,[120,130],{'trend':1,'structure':1,'fibonacci':1,'momentum':1,'volume':1},['support'],['news risk'],'hold support')
 

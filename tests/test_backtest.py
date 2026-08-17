@@ -1,7 +1,8 @@
-import numpy as np
 import pandas as pd
 import pytest
-from backtest.engine import simulate_signals,walk_forward_splits,buy_and_hold
+
+from backtest.engine import buy_and_hold, simulate_signals, walk_forward_splits
+
 
 @pytest.mark.parametrize('hold',[1,2,5,10])
 def test_sim_runs(candles,hold):

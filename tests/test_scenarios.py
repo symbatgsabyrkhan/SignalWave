@@ -1,5 +1,7 @@
 import pytest
-from analysis.scenarios import confidence_score,confidence_label,risk_reward,make_card,three_scenarios,DISCLAIMER
+
+from analysis.scenarios import DISCLAIMER, confidence_label, confidence_score, make_card, risk_reward, three_scenarios
+
 
 @pytest.mark.parametrize('v,expected',[({'trend':0},0),({'trend':1},100),({'trend':0.5},50),({'trend':.8,'structure':.8},80)])
 def test_confidence(v,expected): assert confidence_score(v)==expected

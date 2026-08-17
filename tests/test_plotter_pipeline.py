@@ -1,10 +1,11 @@
-from pathlib import Path
 import pytest
-from analysis.indicators import add_indicators
-from analysis.structure import Pivot,support_resistance_zones,fit_trendline
+
 from analysis.fibonacci import fib_levels
+from analysis.indicators import add_indicators
+from analysis.structure import Pivot, support_resistance_zones
 from charts.plotter import render_chart
 from pipeline import analyze
+
 
 @pytest.mark.parametrize('zones_n',[0,1,3,8])
 def test_render_png(tmp_path,candles,zones_n):

@@ -1,7 +1,10 @@
 """Small SQLite repository for reproducible analyses and price alerts."""
 from __future__ import annotations
-import json, sqlite3
+
+import json
+import sqlite3
 from pathlib import Path
+
 
 class Repository:
     def __init__(self,path:str|Path=":memory:"):

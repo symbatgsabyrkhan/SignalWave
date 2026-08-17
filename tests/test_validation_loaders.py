@@ -1,7 +1,9 @@
 import pandas as pd
 import pytest
+
+from data.loaders import normalize_csv_frame, parse_binance_klines
 from data.validation import validate_candles
-from data.loaders import normalize_csv_frame,parse_binance_klines
+
 
 @pytest.mark.parametrize('missing',['time','open','high','low','close'])
 def test_missing_required(candles,missing):

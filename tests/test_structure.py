@@ -1,5 +1,7 @@
 import pytest
-from analysis.structure import Pivot,local_pivots,zigzag,support_resistance_zones,fit_trendline,strongest_zones
+
+from analysis.structure import Pivot, fit_trendline, local_pivots, strongest_zones, support_resistance_zones, zigzag
+
 
 def test_local_pivots_nonempty(candles): assert local_pivots(candles,3)
 @pytest.mark.parametrize('order',[0,-1])

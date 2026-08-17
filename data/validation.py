@@ -1,6 +1,8 @@
 """Canonical candle validation and friendly warnings."""
 from __future__ import annotations
+
 from dataclasses import dataclass
+
 import pandas as pd
 
 REQUIRED=("time","open","high","low","close")

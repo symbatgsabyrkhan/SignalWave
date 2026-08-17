@@ -1,6 +1,7 @@
 """Plain-language report rendering for Telegram or text export."""
 from __future__ import annotations
-from analysis.scenarios import DecisionCard, DISCLAIMER
+
+from analysis.scenarios import DISCLAIMER, DecisionCard
 
 
 def render_short(symbol:str,timeframe:str,current_price:float,card:DecisionCard)->str:

@@ -6,6 +6,17 @@ addopts = "-q"
 [tool.ruff]
 line-length = 120
 
+[tool.ruff.lint]
+ignore = [
+    "B008",
+    "BLE001",
+    "C408",
+    "F841",
+    "PLW0602",
+    "RUF007",
+    "RUF046",
+]
+
 [tool.mypy]
 python_version = "3.12"
 ignore_missing_imports = true

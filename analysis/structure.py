@@ -1,9 +1,12 @@
 """Market-structure primitives: pivots, ZigZag filtering, S/R zones and trend lines."""
 from __future__ import annotations
+
 from dataclasses import dataclass
+
 import numpy as np
 import pandas as pd
 from scipy.signal import argrelextrema
+
 
 @dataclass(frozen=True)
 class Pivot:

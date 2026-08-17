@@ -1,5 +1,6 @@
 """Telegram UX definitions kept independent from analysis logic."""
 from __future__ import annotations
+
 MENU=("Загрузить CSV","Данные Binance","Полный технический анализ","Long / Short","Long-term","Backtest","Price alert")
 INTENTS=("Scalp","Swing","Invest")
 def start_text()->str:

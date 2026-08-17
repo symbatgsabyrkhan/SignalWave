@@ -1,6 +1,8 @@
 """Fibonacci retracements/extensions derived from confirmed swing legs."""
 from __future__ import annotations
+
 from dataclasses import dataclass
+
 from .structure import Pivot, Zone
 
 RETRACE = (0.236, 0.382, 0.5, 0.618, 0.786)

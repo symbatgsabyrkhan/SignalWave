@@ -1,5 +1,6 @@
 """Confluence scoring and up/down/unclear decision cards."""
 from __future__ import annotations
+
 from dataclasses import dataclass
 
 DEFAULT_WEIGHTS = {"trend":0.25,"structure":0.30,"fibonacci":0.15,"momentum":0.20,"volume":0.10}

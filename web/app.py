@@ -21,7 +21,6 @@ from backtest.engine import buy_and_hold, simulate_signals
 from data.loaders import fetch_binance, load_csv
 from pipeline import analyze
 
-
 ROOT = Path(__file__).resolve().parent
 
 # IMPORTANT:

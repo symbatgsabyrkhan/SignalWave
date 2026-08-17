@@ -1,13 +1,17 @@
 """Deterministic, Telegram-ready chart rendering for SignalWave."""
 from __future__ import annotations
+
 from pathlib import Path
+
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from analysis.structure import Zone, TrendLine, strongest_zones
+
 from analysis.fibonacci import FibLevel
+from analysis.structure import TrendLine, Zone, strongest_zones
 
 
 def _candles(ax, df: pd.DataFrame):

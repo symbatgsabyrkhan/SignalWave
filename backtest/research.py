@@ -13,7 +13,6 @@ from analysis.indicators import add_indicators
 from backtest.engine import simulate_signals
 from data.loaders import fetch_binance
 
-
 SYMBOLS = ("BTCUSDT", "ETHUSDT", "BNBUSDT")
 TIMEFRAME = "1d"
 LIMIT = 1000
@@ -160,10 +159,10 @@ def classify_regime(df: pd.DataFrame) -> str:
     if pd.isna(sma_now) or pd.isna(sma_prev):
         return "unknown"
 
-    if close > sma_now and sma_now > sma_prev:
+    if close > sma_now > sma_prev:
         return "bull"
 
-    if close < sma_now and sma_now < sma_prev:
+    if close < sma_now < sma_prev:
         return "bear"
 
     return "sideways"

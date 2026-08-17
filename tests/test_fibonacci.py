@@ -1,6 +1,8 @@
 import pytest
-from analysis.structure import Pivot,Zone
-from analysis.fibonacci import fib_levels,last_impulse,levels_from_pivots,mark_confluence,RETRACE,EXT
+
+from analysis.fibonacci import EXT, RETRACE, fib_levels, last_impulse, mark_confluence
+from analysis.structure import Pivot, Zone
+
 
 @pytest.mark.parametrize('start,end',[(100,200),(200,100),(50,75),(75,50)])
 def test_fib_count(start,end): assert len(fib_levels(start,end))==len(RETRACE)+len(EXT)

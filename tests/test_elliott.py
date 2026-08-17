@@ -1,5 +1,6 @@
 import pytest
-from analysis.elliott import cardinal_rules,ratio_score,evaluate_impulse
+
+from analysis.elliott import cardinal_rules, evaluate_impulse, ratio_score
 from analysis.structure import Pivot
 
 VALID=[100,120,110,145,130,160]
