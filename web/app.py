@@ -944,146 +944,146 @@ def backtest(
     # TELEGRAM WEBHOOK
     # ============================================================
 
-    from aiogram.types import Update
+from aiogram.types import Update
 
-    from bot.app import (
-        close_runtime,
-        create_runtime,
-        start_background_tasks,
+from bot.app import (
+    close_runtime,
+    create_runtime,
+    start_background_tasks,
+)
+
+TELEGRAM_WEBHOOK_PATH = "/telegram/webhook"
+
+@app.on_event("startup")
+async def telegram_startup():
+
+    token = os.getenv(
+        "TELEGRAM_BOT_TOKEN"
     )
 
-    TELEGRAM_WEBHOOK_PATH = "/telegram/webhook"
-
-    @app.on_event("startup")
-    async def telegram_startup():
-
-        token = os.getenv(
-            "TELEGRAM_BOT_TOKEN"
-        )
-
-        if not token:
-            print(
-                "Telegram webhook disabled: "
-                "TELEGRAM_BOT_TOKEN is not configured."
-            )
-            return
-
-        bot, _, _ = create_runtime()
-
-        external_url = os.getenv(
-            "TELEGRAM_WEBHOOK_URL"
-        )
-
-        if not external_url:
-
-            render_url = os.getenv(
-                "RENDER_EXTERNAL_URL"
-            )
-
-            if render_url:
-                external_url = (
-                        render_url.rstrip("/")
-                        + TELEGRAM_WEBHOOK_PATH
-                )
-
-        if not external_url:
-            print(
-                "Telegram webhook disabled: "
-                "TELEGRAM_WEBHOOK_URL or "
-                "RENDER_EXTERNAL_URL is required."
-            )
-            return
-
-        secret = os.getenv(
-            "TELEGRAM_WEBHOOK_SECRET"
-        )
-
-        kwargs = {
-            "url": external_url,
-            "drop_pending_updates": False,
-            "allowed_updates": [
-                "message",
-                "callback_query",
-            ],
-        }
-
-        if secret:
-            kwargs[
-                "secret_token"
-            ] = secret
-
-        await bot.set_webhook(
-            **kwargs
-        )
-
-        await start_background_tasks()
-
+    if not token:
         print(
-            "Telegram webhook configured:",
-            external_url,
+            "Telegram webhook disabled: "
+            "TELEGRAM_BOT_TOKEN is not configured."
         )
+        return
 
-    @app.on_event("shutdown")
-    async def telegram_shutdown():
+    bot, _, _ = create_runtime()
 
-        token = os.getenv(
-            "TELEGRAM_BOT_TOKEN"
-        )
-
-        if token:
-            await close_runtime()
-
-    @app.post(
-        TELEGRAM_WEBHOOK_PATH
+    external_url = os.getenv(
+        "TELEGRAM_WEBHOOK_URL"
     )
-    async def telegram_webhook(
-            request: Request,
-    ):
 
-        bot, dispatcher, _ = (
-            create_runtime()
+    if not external_url:
+
+        render_url = os.getenv(
+            "RENDER_EXTERNAL_URL"
         )
 
-        expected_secret = os.getenv(
-            "TELEGRAM_WEBHOOK_SECRET"
-        )
-
-        if expected_secret:
-
-            received_secret = (
-                request.headers.get(
-                    "X-Telegram-Bot-Api-Secret-Token"
-                )
+        if render_url:
+            external_url = (
+                    render_url.rstrip("/")
+                    + TELEGRAM_WEBHOOK_PATH
             )
 
-            if (
-                    received_secret
-                    != expected_secret
-            ):
-                raise HTTPException(
-                    status_code=403,
-                    detail=(
-                        "Invalid Telegram "
-                        "webhook secret"
-                    ),
-                )
+    if not external_url:
+        print(
+            "Telegram webhook disabled: "
+            "TELEGRAM_WEBHOOK_URL or "
+            "RENDER_EXTERNAL_URL is required."
+        )
+        return
 
-        payload = await request.json()
+    secret = os.getenv(
+        "TELEGRAM_WEBHOOK_SECRET"
+    )
 
-        update = (
-            Update.model_validate(
-                payload,
-                context={
-                    "bot": bot
-                },
+    kwargs = {
+        "url": external_url,
+        "drop_pending_updates": False,
+        "allowed_updates": [
+            "message",
+            "callback_query",
+        ],
+    }
+
+    if secret:
+        kwargs[
+            "secret_token"
+        ] = secret
+
+    await bot.set_webhook(
+        **kwargs
+    )
+
+    await start_background_tasks()
+
+    print(
+        "Telegram webhook configured:",
+        external_url,
+    )
+
+@app.on_event("shutdown")
+async def telegram_shutdown():
+
+    token = os.getenv(
+        "TELEGRAM_BOT_TOKEN"
+    )
+
+    if token:
+        await close_runtime()
+
+@app.post(
+    TELEGRAM_WEBHOOK_PATH
+)
+async def telegram_webhook(
+        request: Request,
+):
+
+    bot, dispatcher, _ = (
+        create_runtime()
+    )
+
+    expected_secret = os.getenv(
+        "TELEGRAM_WEBHOOK_SECRET"
+    )
+
+    if expected_secret:
+
+        received_secret = (
+            request.headers.get(
+                "X-Telegram-Bot-Api-Secret-Token"
             )
         )
 
-        await dispatcher.feed_update(
-            bot,
-            update,
-        )
+        if (
+                received_secret
+                != expected_secret
+        ):
+            raise HTTPException(
+                status_code=403,
+                detail=(
+                    "Invalid Telegram "
+                    "webhook secret"
+                ),
+            )
 
-        return {
-            "ok": True
-        }
+    payload = await request.json()
+
+    update = (
+        Update.model_validate(
+            payload,
+            context={
+                "bot": bot
+            },
+        )
+    )
+
+    await dispatcher.feed_update(
+        bot,
+        update,
+    )
+
+    return {
+        "ok": True
+    }
