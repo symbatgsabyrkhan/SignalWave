@@ -8,6 +8,12 @@ data → indicators → market structure → Fibonacci → Elliott → scenarios
 
 ---
 
+🌐 **Live Website:** https://signalwave-939g.onrender.com
+
+🤖 **Telegram Bot:** https://t.me/signalwave_BOT
+
+SignalWave — платформа для технического анализа криптовалют.
+
 ## 1. Project Structure
 
 Open the project root in PyCharm:
