@@ -1,0 +1,8 @@
+SignalWave AI + i18n build
+
+pytest -q: PASS
+health endpoint: PASS
+assistant status endpoint: PASS
+frontend JS syntax check: PASS
+
+Live AI provider call requires the user API key in .env and was not executed without credentials.

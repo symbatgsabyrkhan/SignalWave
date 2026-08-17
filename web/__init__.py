@@ -1,0 +1,1 @@
+"""SignalWave web dashboard package."""

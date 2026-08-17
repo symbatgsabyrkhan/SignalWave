@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050708">
+  <title>SignalWave — Live Market Intelligence</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="rail">
+    <div class="rail-logo">〽</div>
+    <button class="rail-btn active" title="Dashboard">⌂</button>
+    <button class="rail-btn" title="Markets">▥</button>
+    <button class="rail-btn" title="Analysis">⌁</button>
+    <button class="rail-btn" title="Backtest">◫</button>
+    <button class="rail-btn" title="Alerts">◇</button>
+    <div class="rail-spacer"></div>
+    <button id="assistantOpenRail" class="rail-btn ai-rail" title="SignalWave AI">✦</button>
+    <button class="rail-btn" title="Settings">⚙</button>
+  </aside>
+
+  <span class="sr-only">Long / Short</span>
+  <main class="workspace">
+    <header class="live-header">
+      <div class="brand-block">
+        <strong>SIGNALWAVE</strong>
+        <span data-i18n="brandSubtitle">Technical Analysis · Live Market Intelligence</span>
+      </div>
+      <div class="stream-chip"><i></i> <span data-i18n="liveSource">LIVE · BINANCE PUBLIC MARKET DATA</span></div>
+      <div class="live-strip" id="liveMarkets">
+        <article data-symbol="BTCUSDT"><span>BTCUSDT</span><b>Connecting…</b><em>—</em><div id="spark-btc" class="spark"></div></article>
+        <article data-symbol="ETHUSDT"><span>ETHUSDT</span><b>Connecting…</b><em>—</em><div id="spark-eth" class="spark"></div></article>
+        <article data-symbol="SOLUSDT"><span>SOLUSDT</span><b>Connecting…</b><em>—</em><div id="spark-sol" class="spark"></div></article>
+        <article data-symbol="BNBUSDT"><span>BNBUSDT</span><b>Connecting…</b><em>—</em><div id="spark-bnb" class="spark"></div></article>
+      </div>
+      <div class="language-switch" aria-label="Language">
+        <button data-lang="kk">ҚАЗ</button><button data-lang="ru">РУС</button><button data-lang="en" class="active">ENG</button>
+      </div>
+      <button id="assistantOpen" class="ai-header-btn" title="SignalWave AI">✦ <span>AI</span></button>
+      <div class="clock"><b id="clock">--:--:--</b><span id="date">--</span></div>
+    </header>
+
+    <section class="toolbar">
+      <label><span data-i18n="market">MARKET</span><select id="symbol"><option>BTCUSDT</option><option>ETHUSDT</option><option>SOLUSDT</option><option>BNBUSDT</option></select></label>
+      <label><span data-i18n="timeframe">TIMEFRAME</span><select id="timeframe"><option value="1h">1H</option><option value="4h">4H</option><option value="1d" selected>1D</option><option value="1w">1W</option></select></label>
+      <button id="analyze" class="run" data-i18n="runAnalysis">Run Analysis</button>
+      <button id="runBacktest" class="ghost" data-i18n="backtest">Backtest</button>
+      <label class="upload"><span data-i18n="uploadCsv">Upload CSV</span><input id="csvFile" type="file" accept=".csv"></label>
+      <div class="auto"><span data-i18n="lastUpdate">Last update</span> <b id="lastUpdate">—</b> · <span data-i18n="autoRefresh">AUTO REFRESH</span> <i></i></div>
+    </section>
+
+    <div id="error" class="error hidden"></div>
+
+    <section class="top-grid">
+      <article class="panel price-panel">
+        <div class="panel-head">
+          <div><small data-i18n="marketMapKicker">PRICE · VOLUME · MARKET STRUCTURE</small><h2 id="chartTitle">BTCUSDT · 1D</h2></div>
+          <span class="official">● <span data-i18n="officialSource">OFFICIAL LIVE SOURCE</span></span>
+        </div>
+        <div class="ohlc"><span>O <b id="openValue">—</b></span><span>H <b id="highValue">—</b></span><span>L <b id="lowValue">—</b></span><span>C <b id="closeValue">—</b></span></div>
+        <div id="priceChart" class="price-chart"></div>
+      </article>
+
+      <div class="side-stack">
+        <article class="panel market-card">
+          <div class="panel-head"><div><small data-i18n="liveMarket">LIVE MARKET</small><h3 id="marketSymbol">BTCUSDT</h3></div></div>
+          <div class="big-price" id="marketPrice">—</div>
+          <div class="market-change" id="marketChange">—</div>
+          <div class="stats">
+            <div><span data-i18n="high24">24H HIGH</span><b id="high24">—</b></div><div><span data-i18n="low24">24H LOW</span><b id="low24">—</b></div>
+            <div><span data-i18n="volume24">24H VOLUME</span><b id="volume24">—</b></div><div><span data-i18n="source">SOURCE</span><b class="pos">BINANCE</b></div>
+          </div>
+        </article>
+        <article class="panel compact"><div class="panel-head"><h3 data-i18n="supportResistance">SUPPORT & RESISTANCE</h3></div><div id="zones" class="table-list"></div></article>
+        <article class="panel compact"><div class="panel-head"><h3 data-i18n="fibonacci">FIBONACCI RETRACEMENT</h3></div><div id="fibs" class="table-list"></div></article>
+      </div>
+    </section>
+
+    <section class="indicator-grid">
+      <article class="panel"><div class="panel-head"><h3>RSI (14)</h3><b id="rsiValue">—</b></div><div id="rsiChart" class="mini-chart"></div></article>
+      <article class="panel"><div class="panel-head"><h3>MACD (12 · 26 · 9)</h3></div><div id="macdChart" class="mini-chart"></div></article>
+    </section>
+
+    <section class="analysis-grid">
+      <article class="panel"><div class="panel-head"><div><small data-i18n="experimental">EXPERIMENTAL · PROBABILISTIC</small><h3>ELLIOTT WAVE</h3></div></div><div id="elliott" class="elliott"><b data-i18n="waitingAnalysis">Waiting for analysis</b><p data-i18n="elliottWait">SignalWave will evaluate the most recent ZigZag pivots.</p></div></article>
+      <article class="panel scenario-panel"><div class="panel-head"><div><small data-i18n="decisionEngine">DECISION ENGINE</small><h3 data-i18n="scenarioAnalysis">SCENARIO ANALYSIS</h3></div></div><div id="cards" class="cards"></div></article>
+      <article class="panel"><div class="panel-head"><h3 data-i18n="keyLevels">KEY LEVELS</h3></div><div class="key-list">
+        <div><span data-i18n="currentPrice">Current Price</span><b id="keyPrice">—</b></div><div><span data-i18n="marketRegime">Market Regime</span><b id="keyRegime">—</b></div>
+        <div><span>ATR (14)</span><b id="keyAtr">—</b></div><div><span>RSI (14)</span><b id="keyRsi">—</b></div>
+        <div><span>MACD</span><b id="keyMacd">—</b></div><div><span data-i18n="latestVolume">Latest Volume</span><b id="keyVolume">—</b></div>
+      </div></article>
+    </section>
+
+    <section class="mini-strip">
+      <article><span>BTCUSDT</span><b id="miniBtcPrice">—</b><div id="mini-btc"></div></article>
+      <article><span>ETHUSDT</span><b id="miniEthPrice">—</b><div id="mini-eth"></div></article>
+      <article><span>SOLUSDT</span><b id="miniSolPrice">—</b><div id="mini-sol"></div></article>
+      <article><span>BNBUSDT</span><b id="miniBnbPrice">—</b><div id="mini-bnb"></div></article>
+    </section>
+
+    <section class="panel backtest-panel">
+      <div class="panel-head"><div><small data-i18n="historicalValidation">HISTORICAL VALIDATION</small><h3 data-i18n="backtestSummary">BACKTEST SUMMARY</h3></div><span data-i18n="costsIncluded">Costs + execution delay included</span></div>
+      <div id="metrics" class="metrics"><div><small data-i18n="trades">TRADES</small><b>—</b></div><div><small data-i18n="winRate">WIN RATE</small><b>—</b></div><div><small data-i18n="profitFactor">PROFIT FACTOR</small><b>—</b></div><div><small data-i18n="totalReturn">TOTAL RETURN</small><b>—</b></div><div><small data-i18n="maxDrawdown">MAX DRAWDOWN</small><b>—</b></div><div><small>SORTINO</small><b>—</b></div></div>
+    </section>
+
+    <footer data-i18n="footer">Educational & research tool · Not financial advice · Live market layer uses Binance public market data.</footer>
+  </main>
+</div>
+
+<button id="assistantFab" class="assistant-fab" aria-label="Open SignalWave AI">✦</button>
+<aside id="assistantDrawer" class="assistant-drawer" aria-label="SignalWave AI assistant">
+  <div class="assistant-head">
+    <div class="ai-avatar">✦</div>
+    <div><b>SignalWave AI</b><span id="assistantProvider">Checking provider…</span></div>
+    <button id="assistantClose">×</button>
+  </div>
+  <div class="assistant-context"><i></i><span data-i18n="aiContext">Uses the current SignalWave analysis as context</span></div>
+  <div id="assistantMessages" class="assistant-messages">
+    <div class="ai-message assistant"><span data-i18n="aiWelcome">Run an analysis, then ask me why the market is bullish or bearish, what an indicator means, or what could invalidate a scenario.</span></div>
+  </div>
+  <div class="assistant-quick">
+    <button data-ai-quick="explain" data-i18n="explainChart">Explain this chart</button>
+    <button data-ai-quick="scenario" data-i18n="whyScenario">Why this scenario?</button>
+    <button data-ai-quick="risk" data-i18n="explainRisk">Explain the risks</button>
+  </div>
+  <form id="assistantForm" class="assistant-form">
+    <textarea id="assistantInput" rows="2" maxlength="2000" data-i18n-placeholder="aiPlaceholder" placeholder="Ask SignalWave AI…"></textarea>
+    <button type="submit">➤</button>
+  </form>
+  <div class="assistant-disclaimer" data-i18n="aiDisclaimer">Educational explanation only · no guaranteed predictions or trade execution.</div>
+</aside>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

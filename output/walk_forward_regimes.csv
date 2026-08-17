@@ -1,0 +1,8 @@
+symbol,regime,folds,trades,win_rate_pct,avg_return_pct,worst_drawdown_pct
+BTCUSDT,bull,2,8,50.0,9.95,2.75
+BTCUSDT,bear,2,7,57.14,12.32,3.57
+ETHUSDT,bull,1,3,66.67,13.56,3.1
+ETHUSDT,bear,2,4,50.0,6.95,0.68
+ETHUSDT,sideways,1,2,100.0,20.81,0.0
+BNBUSDT,bull,2,6,50.0,-0.41,8.24
+BNBUSDT,bear,2,8,62.5,1.45,5.46
